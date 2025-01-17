@@ -1,0 +1,300 @@
+/* General Page Styling */
+body {
+    font-family: 'Georgia', serif; /* RPG-style font */
+    background: #222; /* Darker background for RPG theme */
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    margin-left: 40px;
+
+}
+
+/* Header */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 15px;
+    background: #1c1c1c; /* Dark, moody header */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+header .avatar {
+    display: flex;
+    position: relative; /* Establishes a stacking context for children */
+    height: 120px; /* Adjust to fit all images vertically */
+    width: 90px; /* Adjust width to match the largest image */
+}
+
+header .avatar img {
+    position: absolute; /* Ensures images are placed relative to the container */
+    top: 0;
+    left: 0;
+    height: 100%; /* Scale to container height */
+    width: auto; /* Maintain aspect ratio */
+}
+
+header .user-info p {
+    font-size: 16px;
+    margin: 0;
+}
+
+header .action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+header .user-container {
+    display: flex;
+    flex-direction: row;
+    width: 66%;
+    justify-content: space-around;
+}
+
+/* Quest Card Button Styling (Glowing Effect) */
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background: #ff6600;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(255, 102, 0, 0.7);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(255, 102, 0, 1);
+}
+
+/* Task Section */
+.task-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px; /* Adjust spacing between task cards */
+    width: 100%; /* Ensure it spans full width */
+    padding: 16px; /* Add some padding around the grid */
+    box-sizing: border-box; /* Include padding in the width/height calculation */
+}
+
+.task-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+    background: #fdf5e6; /* Scroll or quest-like background */
+    border: 2px solid #c2a85f; /* Gold-like border */
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    font-family: 'Cinzel', serif; /* RPG-style font */
+    color: #4a2b12;
+    position: relative;
+    margin-bottom: 16px;
+}
+
+.task-card .task-content {
+    flex: 1;
+}
+
+.task-card .task-title {
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+.task-card .task-details {
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+
+.task-card .task-points {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #c2a85f; /* Gold background for points badge */
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 50px;
+    padding: 6px 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    font-family: 'Cinzel', serif;
+}
+
+.task-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.bonus-task .bonus-icon {
+    width: 25px;
+    position: absolute;
+    top: 1px;
+    left: 2px;
+}
+
+        .coin-gif {
+            width: 14px; /* Adjust size to fit nicely next to the points */
+            height: 14px; /* Match width for a square aspect ratio */
+            vertical-align: middle; /* Align with text */
+            margin-bottom: 3px;
+            animation: spin 1s linear infinite; /* Optional: Add spinning effect */
+        }
+
+/* Create Task Button */
+#create-task-btn {
+    background: #ffcc00;
+    color: black;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 10px auto;
+    display: block;
+}
+
+#create-task-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px #ffcc00;
+}
+
+/* Modal Styles */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.3s;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  width: 90%;
+  max-width: 400px;
+}
+
+.modal-buttons {
+  margin-top: 20px;
+}
+
+.save-btn, .cancel-btn {
+  padding: 10px 20px;
+  margin: 5px;
+  cursor: pointer;
+}
+
+.save-btn {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+
+.cancel-btn {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+
+.modal.visible {
+  visibility: visible;
+  opacity: 1;
+}
+
+.modal-content h2 {
+    color: black;
+}
+
+
+/* History Section */
+#history div {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid #fff;
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px #000;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.2rem;
+    }
+
+    .task {
+        flex: 1 1 100%; /* Stack tasks in a single column */
+    }
+
+    #task-form, #create-task-btn {
+        width: 90%;
+    }
+}
+
+/* Mobile-specific styling */
+@media (max-width: 600px) {
+    .header {
+        display: flex;
+        flex-direction: column; /* Stack items vertically */
+        align-items: center;
+        gap: 10px; /* Add space between items */
+        text-align: center;
+    }
+
+    .avatar {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex-grow: 1; /* Let the avatar section take more space */
+    }
+
+    .avatar img {
+        width: 100px; /* Resize the avatar for mobile */
+        height: auto;
+    }
+
+    .user-info {
+        font-size: 14px; /* Reduce text size for points */
+    }
+
+    .action-buttons {
+        display: flex;
+        flex-wrap: wrap; /* Allow buttons to wrap to the next line */
+        justify-content: center;
+        gap: 5px;
+    }
+
+    .action-buttons button {
+        flex: 1 0 calc(50% - 10px); /* Two buttons per row */
+        max-width: 120px;
+        font-size: 12px; /* Adjust font size */
+        padding: 8px 5px; /* Adjust padding */
+    }
+
+    .user-container {
+        display: flex;
+        flex-direction: row;
+    }
+}

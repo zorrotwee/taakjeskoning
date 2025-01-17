@@ -1,0 +1,27 @@
+/*  Progress bar */
+.progress-container {
+    margin: 20px 0;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 20px;
+    background-color: #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: #4caf50;
+    width: 0; /* Initial value */
+    text-align: center;
+    line-height: 20px;
+    color: black;
+    font-weight: bold;
+    transition: width 0.5s ease-in-out;
+    white-space: nowrap; /* Prevent text wrapping */
+    overflow: visible;   /* Ensure the text can overflow */
+    text-overflow: unset; /* Make sure no ellipsis are added */
+}

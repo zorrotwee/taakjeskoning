@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" type="text/css" href="assets/progressbar.css" />   
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: radial-gradient(circle, #2c2c2c, #000000);
+            color: white;
+            text-align: center;
+        }
+
+        header {
+            padding: 20px;
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #FFD700; /* Gold color */
+        }
+
+        .avatar-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 40px 20px;
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            background: white;
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.8);
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-name, .user-points {
+            margin-top: 10px;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .user-points {
+            font-size: 1rem;
+            color: #FFD700;
+        }
+
+        .user {
+            text-align: center;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .coin-gif {
+            width: 14px; /* Adjust size to fit nicely next to the points */
+            height: 14px; /* Match width for a square aspect ratio */
+            vertical-align: middle; /* Align with text */
+            margin-bottom: 3px;
+            animation: spin 1s linear infinite; /* Optional: Add spinning effect */
+        }
+    </style>
+</head>
+<body>
+    <header>Wie wordt de taken-King</header>
+    <div class="avatar-container" id="avatarContainer">
+        <!-- Dynamic content will be added here -->
+    </div>
+    <script src="/assets/utils.js"></script>
+    <script src="/assets/progressbar.js"></script>
+    <script>
+        async function fetchUsers() {
+            try {
+                const response = await fetch('assets/tasks.php?action=getUsers');
+                const users = await response.json();
+                await populateAvatars(users);
+            } catch (error) {
+                console.error('Error fetching users:', error);
+            }
+        }
+
+        async function populateAvatars(users) {
+            const container = document.getElementById('avatarContainer');
+            container.innerHTML = ''; // Clear existing content
+
+           for (const user of users) {
+                const userElement = document.createElement('div');
+                const pointsToday =  Number(await getWeeklyProgress(user.id, 'today')).toFixed(0);
+
+                userElement.className = 'user';
+                userElement.onclick = () => login(user.id);
+                userElement.innerHTML = `
+                    <div class="avatar">
+                        <img src="images/avatars/${user.avatar}" alt="${user.username}'s Avatar">
+                    </div>
+                    <div class="user-name">${user.username}</div>
+                    <div class="user-points">${user.points} <img class="coin-gif" src="images/coin.gif" alt="Coin"></div>
+                    <div class="user-points">Vandaag: + ${pointsToday}</div>
+                    <div class="progress-container">
+                        <h3>doel:</h3>
+                        <div class="progress-bar">
+                            <div id="progressBarThisWeek${user.id}" class="progress-fill"></div>
+                        </div>
+                        <h3>vorige week: </h3>
+                        <div class="progress-bar">
+                            <div id="progressBarLastWeek${user.id}" class="progress-fill"></div>
+                        </div>
+                    </div>
+                `;
+    
+                container.appendChild(userElement);
+            }
+            
+            loadProgressBars();
+        }
+
+        function login(userId) {
+            localStorage.setItem('currentUserId', userId);
+            window.location.href = 'tasks.html';
+        }
+
+        function loadProgressBars(){
+            const userContainers = document.querySelectorAll(".progress-bar");
+            
+            
+            //console.log(pointsToday);
+
+            // Iterate over each progress bar and update its progress
+            userContainers.forEach((userContainer) => {
+                const progressBarId = userContainer.querySelector(".progress-fill").id; // Get the ID of the progress-fill element
+                const userId = progressBarId.match(/\d+$/)[0]; // Extract the userId from the ID (e.g., progressBarThisWeek1 -> 1)
+
+                // Check if it's for this week or last week
+                if (progressBarId.startsWith("progressBarThisWeek")) {
+                    updateProgressBar(userId, 'this_week', progressBarId); // Update progress for this week
+                } else if (progressBarId.startsWith("progressBarLastWeek")) {
+                    updateProgressBar(userId, 'last_week', progressBarId); // Update progress for last week
+                }
+            });
+        }
+
+        // Fetch users on page load
+        fetchUsers();
+    </script>
+</body>
+</html>

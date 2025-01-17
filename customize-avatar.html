@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customize Avatar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: radial-gradient(circle, #1e1e1e, #000);
+            color: white;
+            text-align: center;
+            margin: 0;
+        }
+
+        header {
+            padding: 20px;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #FFD700;
+        }
+
+        .avatar-preview {
+            width: 111px;
+            height: 111px;
+            position: relative; /* Ensure the images are stacked on top of each other */
+            margin: 0 auto 20px;
+            background-color: white;
+            border: 2px solid #FFD700;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .avatar-preview img {
+            position: absolute; /* Stack images on top of each other */
+            width: 111px;
+            height: 111px;
+            top: 0;    /* Ensure images start from the top */
+            left: 0;   /* Ensure images start from the left */
+        }
+        #current-avatar {
+            transition: all 0.3s ease;
+        }
+
+        .customize-line {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        .customize-line button {
+            width: 40px;
+            height: 40px;
+            background-color: #FFD700; /* Gold background */
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 0 10px;
+        }
+
+        .customize-line button:hover {
+            background-color: #FFC107; /* Slightly darker gold */
+        }
+
+        .customize-line span {
+            display: inline-block;
+            width: 150px; /* Center and align name text */
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .options-section {
+            margin: 20px 0;
+        }
+
+        .options-section h3 {
+            font-size: 20px;
+            color: white;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .options-section .option-list {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .options-section .option-list button {
+            background-color: #FFD700; /* Gold button background */
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .options-section .option-list button:hover {
+            background-color: #FFC107; /* Slightly darker gold */
+        }
+
+        .base-avatar-buttons button {
+            background-color: #FFD700;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        .base-avatar-buttons button:hover {
+            background-color: #FFC107;
+        }
+
+        .shop-section {
+            margin-top: 40px;
+            padding: 20px;
+            background: #2e2e2e;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .shop-section h3 {
+            font-size: 24px;
+            color: #FFD700;
+            margin-bottom: 20px;
+        }
+
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
+            justify-items: center;
+        }
+
+        .shop-item {
+            background-color: #444;
+            border: 2px solid #FFD700;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .shop-item-img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+        }
+
+        .shop-item-price {
+            color: white;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .buy-item-btn {
+            background-color: #FFD700;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .buy-item-btn:hover {
+            background-color: #FFC107;
+        }
+
+        //shop
+        .shop-section {
+            margin-top: 40px;
+            padding: 20px;
+            background: #2e2e2e;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .shop-section h3 {
+            font-size: 24px;
+            color: #FFD700;
+            margin-bottom: 20px;
+        }
+
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
+            justify-items: center;
+        }
+
+        .shop-item {
+            background-color: #444;
+            border: 2px solid #FFD700;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .shop-item-img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+        }
+
+        .shop-item-price {
+            color: white;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .buy-item-btn {
+            background-color: #FFD700;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .buy-item-btn:hover {
+            background-color: #FFC107;
+        }    
+        .shop-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin: 20px;
+        }
+
+        .shop-item-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px; /* Space between title and image */
+            color: #FFD700; /* Gold color for the title, adjust as needed */
+        }        
+                    
+    </style>
+</head>
+<body>
+    <header>Customize Your Avatar</header>
+
+    <div class="avatar-preview" id="avatarPreview">
+        <img id="crown" src="images/avatars/kroon.png" alt="crown" style="z-index: 8; display: none;">
+        <img id="baseAvatar" src="images/avatars/avatar_1/base.png" alt="Avatar Base">
+        <img id="skin" src="images/avatars/avatar_1/skin.png" alt="skin">
+        <img id="head" src="images/avatars/avatar_1/head/bruin.png" alt="Head">
+        <img id="body" src="images/avatars/avatar_1/body/rood.png" alt="Body">
+        <img id="legs" src="images/avatars/avatar_1/legs/groene_broek.png" alt="Legs">
+    </div>
+
+    <div class="base-avatar-section">
+        <h3>Select Base Avatar</h3>
+        <div class="base-avatar-buttons">
+            <button onclick="changeBaseAvatar('avatar_1')">Avatar 1</button>
+            <button onclick="changeBaseAvatar('avatar_2')">Avatar 2</button>
+            <button onclick="changeBaseAvatar('avatar_3')">Avatar 3</button>
+        </div>
+    </div>
+
+    <div class="customize-section">
+        <!-- Head -->
+        <div class="customize-row">
+            <button onclick="changeOption('head', -1)">&lt;</button>
+            <span id="headOption">Short Hair</span>
+            <button onclick="changeOption('head', 1)">&gt;</button>
+        </div>
+
+        <!-- Body -->
+        <div class="customize-row">
+            <button onclick="changeOption('body', -1)">&lt;</button>
+            <span id="bodyOption">T-Shirt</span>
+            <button onclick="changeOption('body', 1)">&gt;</button>
+        </div>
+
+        <!-- Legs -->
+        <div class="customize-row">
+            <button onclick="changeOption('legs', -1)">&lt;</button>
+            <span id="legsOption">Jeans</span>
+            <button onclick="changeOption('legs', 1)">&gt;</button>
+        </div>
+    </div>
+
+    <button id="save-avatar">Save Avatar</button>
+    <button id="back" onclick="goBack()">Back</button>
+
+    <!-- Shop Section -->
+    <div class="shop-section">
+        <h3>Shop</h3>
+        <div class="shop-grid">
+            <!-- Item 1 -->
+            <div class="shop-item">
+                <span class="shop-item-title">Schermtijd</span> <!-- Title above the item -->
+                <img src="images/shop/tablet.png" alt="Item 1" class="shop-item-img">
+                <p class="shop-item-price">250 Points</p>
+                <button class="buy-item-btn" data-item="1" data-price="250">Koop</button>
+            </div>
+            <!-- Item 2 -->
+            <div class="shop-item">
+                <span class="shop-item-title">Knuffel</span> <!-- Title above the item -->
+                <img src="images/shop/knuffel.png" alt="Item 2" class="shop-item-img">
+                <p class="shop-item-price">15 Points</p>
+                <button class="buy-item-btn" data-item="2" data-price="15">Koop</button>
+            </div>
+            <!-- Add more items as needed -->
+        </div>
+    </div>    
+    <script src="/assets/utils.js"></script>
+    <script>
+
+        let avatarData;
+        let allAvatarData;
+        let  currentIndices = {
+            avatar: 'avatar_1',
+            head: 0,
+            body: 0,
+            legs: 0,
+        };
+
+        function goBack() {
+            window.location.href = '/tasks.html'; // Replace with the actual path to your customization page
+        }
+
+        //Load Avatar Data from the Json on the server
+        async function loadAvatars() {
+            const response = await fetch('/assets/avatars.json');
+            const data = await response.json();
+
+            return data.avatars;
+        }
+
+        function validateCurrentIndices(currentIndices) {
+            const { options } = avatarData;
+
+            // Iterate through each part in currentIndices
+            for (const part in currentIndices) {
+                if (part === 'avatar') continue; // Skip the avatar key
+
+                // Check if the part exists in avatarData and the index is valid
+                if (options[part] && currentIndices[part] >= options[part].length) {
+                    currentIndices[part] = 0; // Reset index to 0 if it exceeds the options
+                }
+            }
+            return currentIndices;
+        }
+
+        function changeBaseAvatar(avatarName) {
+            const avatarIndex = allAvatarData.findIndex(avatar => avatar.id === avatarName);
+            
+            //change the data & the avatar to load
+            currentIndices.avatar = avatarIndex;
+            avatarData = allAvatarData[currentIndices.avatar];
+
+            //check if the indices are not higher than the amount of options for this avatar
+            currentIndices = validateCurrentIndices(currentIndices);
+            
+            // Update all parts of the avatar
+            updatePreview('baseAvatar');
+            updatePreview('head');
+            updatePreview('body');
+            updatePreview('legs');
+        }
+
+
+        function changeOption(part, direction) {
+            const maxIndex = avatarData.options[part].length - 1;
+            currentIndices[part] = (currentIndices[part] + direction + avatarData.options[part].length) % avatarData.options[part].length;
+            updatePreview(part);
+        }
+
+        function updatePreview(part) {
+            const imgElement = document.getElementById(part);
+
+            if (part === 'baseAvatar') {
+                // Update the base avatar image
+                imgElement.src = `images/avatars/${avatarData.id}/base.png`;
+                document.getElementById('skin').src = `images/avatars/${avatarData.id}/skin.png`
+            } else if (avatarData.options[part]) {
+                // Update other parts like head, body, legs
+                imgElement.src = `images/avatars/${avatarData.id}/${part}/${avatarData.options[part][currentIndices[part]]}.png`;
+                document.getElementById(`${part}Option`).textContent = avatarData.options[part][currentIndices[part]].replace(/_/g, ' ');
+            }
+        }
+
+    document.getElementById('save-avatar').addEventListener('click', () => {
+        const selectedAvatar = currentIndices; // Replace with your actual logic to get the avatar
+        const userId = localStorage.getItem('currentUserId'); // Retrieve the user ID
+
+        const avatarData = JSON.stringify(selectedAvatar);
+
+        if (!userId) {
+            alert('User ID not found. Please log in again.');
+            return;
+        }
+
+        fetch('assets/save_avatar.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `user_id=${encodeURIComponent(userId)}&avatar_data=${encodeURIComponent(avatarData)}`,
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Avatar saved successfully!');
+            } else {
+                alert(`Failed to save avatar: ${data.message}`);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        try {
+            // Get Avatar Options from the Server
+            allAvatarData = await loadAvatars();
+            
+            // Retrieve user ID from localStorage
+            const userId = localStorage.getItem('currentUserId');
+
+           // Fetch avatar data for the user
+            const response = await fetch(`assets/get_avatar.php?user_id=${encodeURIComponent(userId)}`);
+            const data = await response.json();
+
+            //select the avatar of the current user
+            currentIndices = data.character;
+            avatarData = allAvatarData[currentIndices.avatar];
+
+            if (data.success && data.character) {
+                // Update base avatar
+                currentIndices = data.character;
+                updatePreview('baseAvatar');
+                updatePreview('head');
+                updatePreview('body');
+                updatePreview('legs');
+
+                console.log('Avatar loaded successfully:', data.character);
+            } else {
+                console.warn('No saved avatar found, loading defaults.');
+            }
+        } catch (error) {
+            console.error('Error loading avatar:', error);
+        }
+    });
+
+    document.querySelectorAll('.buy-item-btn').forEach(button => {
+        button.addEventListener('click', async function() {
+            const itemId = this.dataset.item;
+            const itemPrice = parseInt(this.dataset.price);
+
+            // Get the current score
+            const currentUserId = localStorage.getItem('currentUserId');
+            const response = await fetch(`assets/getUserScore.php?user_id=${encodeURIComponent(currentUserId)}`);
+            const userData = await response.json();
+            console.log(userData);
+            
+            if (userData.success) {
+                const currentScore = userData.points;
+                const price = -parseInt(itemPrice, 10);
+
+                if (currentScore >= itemPrice) {
+                    // Update the score in the database
+                    await fetch(`${apiUrl}?action=updatePoints`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ userId: currentUserId, points: price }),
+                    });
+                    alert('Item purchased successfully!');
+                    // Optionally, update the displayed score on the page
+                } else {
+                    alert('You do not have enough points to buy this item.');
+                }
+                
+                
+            } else {
+                console.error('Failed to fetch user data.');
+            }
+        });
+    });
+
+ 
+    </script>
+</body>
+</html>

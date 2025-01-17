@@ -1,0 +1,35 @@
+    {
+        "avatars": [
+            {
+                "id": "avatar_1",
+                "name": "Warrior",
+                "options": {
+                    "head": ["bruin", "zwart", "rood", "blond"],
+                    "body": ["rood", "geel", "roze", "oranje"],
+                    "legs": ["donker bruine broek", "groene broek", "blauwe broek","licht bruine broek"]
+                },
+                "gear":{
+                    "top": ["kroon"],
+                    "left": ["zwaard"]
+                }
+            },
+            {
+                "id": "avatar_2",
+                "name": "Archer",
+                "options": {
+                    "head": ["bruin", "zwart", "rood", "blond"],
+                    "body": ["rood", "geel", "roze", "oranje"],
+                    "legs": ["donker bruine broek", "groene broek", "blauwe broek","licht bruine broek"]
+                }
+            },
+            {
+                "id": "avatar_3",
+                "name": "Mage",
+                "options": {
+                    "head": ["bruin", "zwart", "rood", "blond"],
+                    "body": ["rood", "geel", "roze", "oranje"],
+                    "legs": ["donker bruine broek", "groene broek", "blauwe broek","licht bruine broek"]
+                }
+            }                      
+        ]
+    }

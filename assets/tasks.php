@@ -28,15 +28,60 @@ switch ($action) {
 
         // Select tasks assigned to the user or tasks that are unassigned
         $stmt = $conn->prepare("
-            SELECT id, name, recurrence, points, type, description, task_order, is_bonus
-            FROM tasks 
-            WHERE assigned_to IS NULL OR FIND_IN_SET(?, assigned_to)
-        ");
+                SELECT 
+                    t.id AS task_id,
+                    t.name,
+                    t.recurrence,
+                    t.points,
+                    t.type,
+                    t.description,
+                    t.task_order,
+                    t.is_bonus,
+                    bo.id AS slider_id,
+                    bo.name AS slider_label,
+                    bo.bonus_points
+                FROM tasks t
+                LEFT JOIN task_bonus_options tbo ON t.id = tbo.task_id
+                LEFT JOIN bonus_options bo ON tbo.bonus_option_id = bo.id
+                WHERE t.assigned_to IS NULL OR FIND_IN_SET(?, t.assigned_to)
+            ");
 
         $stmt->bind_param("i", $userId);
         $stmt->execute();
         $result = $stmt->get_result();
-        $tasks = $result->fetch_all(MYSQLI_ASSOC);
+
+        // Process the results into the desired format
+        $tasks = [];
+        while ($row = $result->fetch_assoc()) {
+            $taskId = $row['task_id'];
+
+            // Initialize task if not already added
+            if (!isset($tasks[$taskId])) {
+                $tasks[$taskId] = [
+                    'id' => $row['task_id'],
+                    'name' => $row['name'],
+                    'recurrence' => $row['recurrence'],
+                    'points' => (int)$row['points'],
+                    'type' => $row['type'],
+                    'description' => $row['description'],
+                    'task_order' => (int)$row['task_order'],
+                    'is_bonus' => (bool)$row['is_bonus'],
+                    'sliders' => []
+                ];
+            }
+
+            // Add slider if it exists
+            if ($row['slider_id']) {
+                $tasks[$taskId]['sliders'][] = [
+                    'id' => (int)$row['slider_id'],
+                    'label' => $row['slider_label'],
+                    'bonusPoints' => (int)$row['bonus_points']
+                ];
+            }
+        }
+
+        // Reindex array to remove task IDs as keys
+        $tasks = array_values($tasks);
         
         echo json_encode($tasks);
         break;
@@ -48,8 +93,8 @@ switch ($action) {
             FROM task_history h
             JOIN users u ON h.user_id = u.id
             JOIN tasks t ON h.task_id = t.id
-            ORDER BY h.completion_time DESC
-            LIMIT 20
+            ORDER by h.completion_time DESC, h.id desc
+            LIMIT 30
         ");
         $stmt->execute();
         $result = $stmt->get_result();
@@ -209,7 +254,7 @@ switch ($action) {
                 'score' => $row['total_points'] ?? 0
             ];
         }
-
+        //echo json_encode($startOfWeek);
         echo json_encode($scores);
         break;
 

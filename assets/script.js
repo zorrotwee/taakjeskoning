@@ -33,7 +33,7 @@ async function loadUI(){
     }
 
     //Show the avatar of the user
-    renderAvatar();
+    displayAvatar(currentUserId);
 
     //Load refreshung parts
     updateUI();
@@ -151,41 +151,6 @@ function renderHistory() {
     `).join("");
 }
 
-//render the User Avatar
-async function renderAvatar() {
-
-    // Fetch all avatar configuration data
-    const [allAvatarResponse, userAvatarResponse] = await Promise.all([
-        fetch('/assets/avatars.json'),
-        fetch(`assets/get_avatar.php?user_id=${encodeURIComponent(currentUserId)}`)
-    ]);
-
-    const allAvatarData = await allAvatarResponse.json();
-    const userData = await userAvatarResponse.json();
-
-    // Set user data
-    const currentIndices = userData.character;
-    const avatarData = (allAvatarData.avatars[currentIndices.avatar]);
-    //console.log(avatarData);
-    //update the base avatar image
-    document.getElementById("baseAvatar").src = `images/avatars/${avatarData.id}/base.png`;
-    document.getElementById('skin').src = `images/avatars/${avatarData.id}/skin.png`
-
-    
-    const avatarParts = ['head', 'body', 'legs']; // Customize as needed
-    // Update avatar elements dynamically
-    avatarParts.forEach(part => {
-        const imgElement = document.getElementById(part);
-
-        const partIndex = currentIndices[part];
-        const partImage = avatarData.options[part][partIndex];
-
-        imgElement.src = `images/avatars/${avatarData.id}/${part}/${partImage}.png`;
-
-        });
-
-    }
-
 // Update points for a user
 async function updateUserPoints(userId, points) {
     try {
@@ -198,24 +163,31 @@ async function updateUserPoints(userId, points) {
         // Update points locally
         const currentUser = users.find(user => user.id == userId);
         currentUser.points += points;
-        document.getElementById("current-user-points").textContent = `Points: ${currentUser.points}`;
+        document.getElementById("current-user-points").textContent = `${currentUser.points}`;
     } catch (error) {
         console.error("Error updating user points:", error);
     }
 }
 
+
 // Complete a task
-async function completeTask(taskId, completionDate) { 
+async function completeTask(taskId, completionDate, bonusPoints = 0) { 
+
     const task = tasks.find(t => t.id == taskId);
+
     if (!task) return;
     // Find the user by ID
     const currentUser = users.find(user => user.id == currentUserId);
+
+    // Total points = base task points + any bonus points (e.g., from sliders)
+    const totalPoints = parseInt(task.points, 10) + parseInt(bonusPoints, 10);
+    //console.log(totalPoints);
 
     const entry = {
         user: currentUser.username,
         taskName: task.name,
         date: completionDate, // Use the date from the modal
-        reward: parseInt(task.points, 10), // Use the reward from the task
+        reward: totalPoints, // Use the reward from the task
     };
 
     try {
@@ -230,7 +202,7 @@ async function completeTask(taskId, completionDate) {
 
         if (data.success) {
             // Use the updateUserPoints function to update the points
-            await updateUserPoints(currentUserId, entry.reward);
+            await updateUserPoints(currentUserId, totalPoints);
 
             updateUI();
         } else {
@@ -240,6 +212,140 @@ async function completeTask(taskId, completionDate) {
         console.error("Error completing task:", error);
     }
 }
+
+//Open Task Completion Modal
+const taskModal = document.getElementById("taskModal");
+
+function handleTaskClick(taskId) {
+    const taskNameEl = document.getElementById("taskName");
+    const completionDateEl = document.getElementById("completionDate");
+    const taskPointsEl = document.getElementById("taskPoints");
+    
+    if (!taskId) {
+        console.error("Task ID is missing!");
+        return;
+    }
+    // Find the task
+    const task = tasks.find(t => t.id == taskId);
+    if (!task) {
+        console.error("Task not found!");
+        return;
+    }
+
+    // Reset bonus points when opening the modal
+    taskModal.dataset.bonusPoints = 0;    
+
+    // Set the date input to the current date
+    const today = new Date();
+    const formattedDate = today.toISOString().split("T")[0]; // Format as YYYY-MM-DD
+    completionDateEl.value = formattedDate;
+
+    // Open the modal
+    if (taskModal) {
+        taskModal.classList.add("visible");
+        taskNameEl.textContent = task.name;
+        taskPointsEl.textContent = task.points;
+        taskModal.dataset.taskId = taskId; // Store task ID in the modal for later use
+         // Add the sliders dynamically based on the task type
+        addTaskSliders(task);
+    }
+}
+
+// Save button click handler
+document.getElementById("saveTaskButton").addEventListener("click", () => {
+
+    const taskId = taskModal.dataset.taskId; // Retrieve stored task ID
+    const completionDate = document.getElementById("completionDate").value; // Get the selected date
+    const bonusPoints = taskModal.dataset.bonusPoints; // Get the updated points from modal
+
+
+    if (taskId && completionDate) {
+        completeTask(taskId,completionDate,bonusPoints); // Pass taskId to completeTask function
+        taskModal.classList.remove("visible");
+    } else {
+        console.error("Task ID is not set in the modal.");
+    }
+});
+
+// Cancel button click handler
+cancelTaskButton.addEventListener("click", () => {
+    taskModal.classList.remove("visible");
+});
+
+// Initialize
+//add button funciontality to all task elements
+document.querySelectorAll("#routine-tasks, #one-time-tasks").forEach(container => {
+    container.addEventListener("click", (event) => {
+        const card = event.target.closest(".task-card");
+        if (card) {
+            const taskTitle = card.querySelector(".task-title").textContent;
+            const taskId = card.dataset.taskId;
+            handleTaskClick(taskId);
+        }
+    });
+});
+
+// Function to dynamically add sliders based on task type
+function addTaskSliders(task) {
+    const slidersContainer = document.getElementById("slidersContainer"); // This will be the div where sliders are placed
+    slidersContainer.innerHTML = ''; // Clear any existing sliders
+
+    task.sliders.forEach(slider => {
+        const sliderContainer = document.createElement("div");
+        sliderContainer.classList.add("custom-checkbox");
+
+        const label = document.createElement("span");
+        label.classList.add("rpg-font");
+        label.textContent = slider.label;
+        
+        const input = document.createElement("input");
+        input.type = "checkbox";
+        input.id = `slider-${slider.id}`;
+        input.hidden = true;
+        input.checked = false; // Default state to false
+
+        const sliderElement = document.createElement("label");
+        sliderElement.setAttribute("for", input.id);
+        sliderElement.classList.add("slider");
+        input.dataset.points = slider.points; // Store the points value in the checkbox
+
+        sliderContainer.appendChild(label);
+        sliderContainer.appendChild(input);
+        sliderContainer.appendChild(sliderElement);
+
+        slidersContainer.appendChild(sliderContainer);
+
+        // Update the points when slider is toggled
+        input.addEventListener("change", () => {
+            updatePointsForSliders(task);
+        });
+    });
+}
+
+// Update the points based on the slider state
+function updatePointsForSliders(task) {
+
+    let basePoints = parseInt(task.points, 10); // Start with the task's base points
+    let totalBonusPoints = 0;
+    // Loop through each checkbox (slider) to check if it's checked
+    task.sliders.forEach(option => {
+        const checkbox = document.getElementById("slider-"+option.id);
+        if (checkbox.checked) {
+            totalBonusPoints += option.bonusPoints; // Add bonus points if checked
+        }
+    });
+
+    // Update the points displayed in the modal
+    const taskPointsEl = document.getElementById("taskPoints");
+    taskPointsEl.textContent = basePoints+totalBonusPoints;
+    taskModal.dataset.bonusPoints = totalBonusPoints; // Save updated points to modal
+}
+
+
+
+
+
+
 
 
 // Open the form for creating or editing a task
@@ -336,63 +442,6 @@ async function deleteTask(taskId) {
 
 
 
-//Open Task Completion Modal
-const taskModal = document.getElementById("taskModal");
-const taskNameEl = document.getElementById("taskName");
-const completionDateEl = document.getElementById("completionDate");
-const saveTaskButton = document.getElementById("saveTaskButton");
-const cancelTaskButton = document.getElementById("cancelTaskButton");
 
-// Task click handler
-function handleTaskClick(taskId, taskTitle) {
-    if (!taskId) {
-        console.error("Task ID is missing!");
-        return;
-    }
-    // Set the date input to the current date
-    const dateInput = document.getElementById("completionDate");
-    const today = new Date();
-    const formattedDate = today.toISOString().split("T")[0]; // Format as YYYY-MM-DD
-    dateInput.value = formattedDate;
-
-    // Open the modal
-    if (taskModal) {
-        taskModal.classList.add("visible");
-        document.getElementById("taskName").textContent = taskTitle;
-        taskModal.dataset.taskId = taskId; // Store task ID in the modal for later use
-    }
-}
-
-// Save button click handler
-document.getElementById("saveTaskButton").addEventListener("click", () => {
-
-    const taskId = taskModal.dataset.taskId; // Retrieve stored task ID
-    const completionDate = document.getElementById("completionDate").value; // Get the selected date
-
-    if (taskId && completionDate) {
-        completeTask(taskId,completionDate); // Pass taskId to completeTask function
-        taskModal.classList.remove("visible");
-    } else {
-        console.error("Task ID is not set in the modal.");
-    }
-});
-
-// Cancel button click handler
-cancelTaskButton.addEventListener("click", () => {
-    taskModal.classList.remove("visible");
-});
-
-// Initialize
-//add button funciontality to all task elements
-document.querySelectorAll("#routine-tasks, #one-time-tasks").forEach(container => {
-    container.addEventListener("click", (event) => {
-        const card = event.target.closest(".task-card");
-        if (card) {
-            const taskTitle = card.querySelector(".task-title").textContent;
-            const taskId = card.dataset.taskId;
-            handleTaskClick(taskId, taskTitle);
-        }
-    });
-});
 
 window.onload = loadUI();

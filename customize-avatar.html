@@ -249,11 +249,12 @@
 
     <div class="avatar-preview" id="avatarPreview">
         <img id="crown" src="images/avatars/kroon.png" alt="crown" style="z-index: 8; display: none;">
+        <img id="left" src="images/avatars/avatar_1/left/none.png"  style="z-index: 7;" alt="Left">
         <img id="baseAvatar" src="images/avatars/avatar_1/base.png" alt="Avatar Base">
         <img id="skin" src="images/avatars/avatar_1/skin.png" alt="skin">
         <img id="head" src="images/avatars/avatar_1/head/bruin.png" alt="Head">
         <img id="body" src="images/avatars/avatar_1/body/rood.png" alt="Body">
-        <img id="legs" src="images/avatars/avatar_1/legs/groene_broek.png" alt="Legs">
+        <img id="legs" src="images/avatars/avatar_1/legs/groene broek.png" alt="Legs">
     </div>
 
     <div class="base-avatar-section">
@@ -286,6 +287,12 @@
             <span id="legsOption">Jeans</span>
             <button onclick="changeOption('legs', 1)">&gt;</button>
         </div>
+        <!-- Left -->
+        <div class="customize-row">
+            <button onclick="changeOption('left', -1)">&lt;</button>
+            <span id="leftOption">Geen</span>
+            <button onclick="changeOption('left', 1)">&gt;</button>
+        </div>
     </div>
 
     <button id="save-avatar">Save Avatar</button>
@@ -300,189 +307,135 @@
                 <span class="shop-item-title">Schermtijd</span> <!-- Title above the item -->
                 <img src="images/shop/tablet.png" alt="Item 1" class="shop-item-img">
                 <p class="shop-item-price">250 Points</p>
-                <button class="buy-item-btn" data-item="1" data-price="250">Koop</button>
+                <button class="buy-item-btn" data-item="1" data-price="250" data-part-type="" data-ingameitem="0">Koop</button>
             </div>
             <!-- Item 2 -->
             <div class="shop-item">
                 <span class="shop-item-title">Knuffel</span> <!-- Title above the item -->
                 <img src="images/shop/knuffel.png" alt="Item 2" class="shop-item-img">
                 <p class="shop-item-price">15 Points</p>
-                <button class="buy-item-btn" data-item="2" data-price="15">Koop</button>
+                <button class="buy-item-btn" data-item="2" data-price="15" data-part-type="" data-ingameitem="0">Koop</button>
             </div>
+            <div class="shop-item">
+                <span class="shop-item-title">Zwaard</span> <!-- Title above the item -->
+                <img src="images/shop/sword.png" alt="Item 3" class="shop-item-img">
+                <p class="shop-item-price">500 Points</p>
+                <button class="buy-item-btn" data-item="sword" data-part-type="left" data-price="500" data-ingameitem="1">Koop</button>
+            </div>            
             <!-- Add more items as needed -->
         </div>
     </div>    
     <script src="/assets/utils.js"></script>
+    <script src="/assets/js/avatar.js"></script>
     <script>
 
-        let avatarData;
-        let allAvatarData;
-        let  currentIndices = {
-            avatar: 'avatar_1',
-            head: 0,
-            body: 0,
-            legs: 0,
-        };
-
-        function goBack() {
-            window.location.href = '/tasks.html'; // Replace with the actual path to your customization page
-        }
-
-        //Load Avatar Data from the Json on the server
-        async function loadAvatars() {
-            const response = await fetch('/assets/avatars.json');
-            const data = await response.json();
-
-            return data.avatars;
-        }
-
-        function validateCurrentIndices(currentIndices) {
-            const { options } = avatarData;
-
-            // Iterate through each part in currentIndices
-            for (const part in currentIndices) {
-                if (part === 'avatar') continue; // Skip the avatar key
-
-                // Check if the part exists in avatarData and the index is valid
-                if (options[part] && currentIndices[part] >= options[part].length) {
-                    currentIndices[part] = 0; // Reset index to 0 if it exceeds the options
-                }
-            }
-            return currentIndices;
-        }
-
-        function changeBaseAvatar(avatarName) {
-            const avatarIndex = allAvatarData.findIndex(avatar => avatar.id === avatarName);
-            
-            //change the data & the avatar to load
-            currentIndices.avatar = avatarIndex;
-            avatarData = allAvatarData[currentIndices.avatar];
-
-            //check if the indices are not higher than the amount of options for this avatar
-            currentIndices = validateCurrentIndices(currentIndices);
-            
-            // Update all parts of the avatar
-            updatePreview('baseAvatar');
-            updatePreview('head');
-            updatePreview('body');
-            updatePreview('legs');
-        }
-
-
-        function changeOption(part, direction) {
-            const maxIndex = avatarData.options[part].length - 1;
-            currentIndices[part] = (currentIndices[part] + direction + avatarData.options[part].length) % avatarData.options[part].length;
-            updatePreview(part);
-        }
-
-        function updatePreview(part) {
-            const imgElement = document.getElementById(part);
-
-            if (part === 'baseAvatar') {
-                // Update the base avatar image
-                imgElement.src = `images/avatars/${avatarData.id}/base.png`;
-                document.getElementById('skin').src = `images/avatars/${avatarData.id}/skin.png`
-            } else if (avatarData.options[part]) {
-                // Update other parts like head, body, legs
-                imgElement.src = `images/avatars/${avatarData.id}/${part}/${avatarData.options[part][currentIndices[part]]}.png`;
-                document.getElementById(`${part}Option`).textContent = avatarData.options[part][currentIndices[part]].replace(/_/g, ' ');
-            }
-        }
-
-    document.getElementById('save-avatar').addEventListener('click', () => {
-        const selectedAvatar = currentIndices; // Replace with your actual logic to get the avatar
-        const userId = localStorage.getItem('currentUserId'); // Retrieve the user ID
-
-        const avatarData = JSON.stringify(selectedAvatar);
-
-        if (!userId) {
-            alert('User ID not found. Please log in again.');
-            return;
-        }
-
-        fetch('assets/save_avatar.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `user_id=${encodeURIComponent(userId)}&avatar_data=${encodeURIComponent(avatarData)}`,
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Avatar saved successfully!');
-            } else {
-                alert(`Failed to save avatar: ${data.message}`);
-            }
-        })
-        .catch(error => console.error('Error:', error));
-    });
+    function goBack() {
+        window.location.href = '/tasks.html'; // Replace with the actual path to your customization page
+    }
 
     document.addEventListener('DOMContentLoaded', async () => {
-        try {
-            // Get Avatar Options from the Server
-            allAvatarData = await loadAvatars();
-            
-            // Retrieve user ID from localStorage
-            const userId = localStorage.getItem('currentUserId');
+        // Retrieve user ID from localStorage
+        userId = localStorage.getItem('currentUserId');
 
-           // Fetch avatar data for the user
-            const response = await fetch(`assets/get_avatar.php?user_id=${encodeURIComponent(userId)}`);
-            const data = await response.json();
+        //load user inventory
+        await loadUserInventory(userId);
 
-            //select the avatar of the current user
-            currentIndices = data.character;
-            avatarData = allAvatarData[currentIndices.avatar];
+        //load the user data
+        displayAvatar(userId);
+        });
 
-            if (data.success && data.character) {
-                // Update base avatar
-                currentIndices = data.character;
-                updatePreview('baseAvatar');
-                updatePreview('head');
-                updatePreview('body');
-                updatePreview('legs');
-
-                console.log('Avatar loaded successfully:', data.character);
-            } else {
-                console.warn('No saved avatar found, loading defaults.');
-            }
-        } catch (error) {
-            console.error('Error loading avatar:', error);
-        }
-    });
+    document.getElementById("save-avatar").addEventListener("click", saveAvatar);
 
     document.querySelectorAll('.buy-item-btn').forEach(button => {
         button.addEventListener('click', async function() {
             const itemId = this.dataset.item;
             const itemPrice = parseInt(this.dataset.price);
-
-            // Get the current score
             const currentUserId = localStorage.getItem('currentUserId');
-            const response = await fetch(`assets/getUserScore.php?user_id=${encodeURIComponent(currentUserId)}`);
-            const userData = await response.json();
-            console.log(userData);
-            
-            if (userData.success) {
-                const currentScore = userData.points;
-                const price = -parseInt(itemPrice, 10);
+            const inGameItem = parseInt(this.dataset.ingameitem);
+            const partType = this.dataset.partType;
 
+            console.log(itemId);
+            if (!currentUserId) {
+                alert('User ID not found. Please log in.');
+                return;
+            }
+            
+            try {
+                // Fetch user score
+                const response = await fetch(`assets/getUserScore.php?user_id=${encodeURIComponent(currentUserId)}`);
+                const userData = await response.json();
+                    
+                if (!userData.success) {
+                    console.error('Failed to fetch user data.');
+                    alert('Error retrieving user information. Please try again.');
+                    return;
+                }    
+                
+                const currentScore = userData.points;
+                console.log("userscore:" + currentScore);
+                
+                //Only do the check if it's an in game item
+                if (inGameItem){
+                    // Check if the user already owns the item
+                    const ownershipCheck = await fetch(`assets/checkOwnership.php?user_id=${encodeURIComponent(currentUserId)}&item_id=${encodeURIComponent(itemId)}`);
+                    const ownershipData = await ownershipCheck.json();
+
+                    console.log(ownershipData);
+                    if (!ownershipData.success) {
+                        console.error('Failed to check item ownership.');
+                        alert('Error checking item ownership. Please try again.');
+                        return;
+                    }
+                    
+                    if (ownershipData.count) {
+                        alert('Je hebt dit al gekocht.');
+                        return;
+                    }
+                }
+
+                // Verify if the user has enough points
                 if (currentScore >= itemPrice) {
-                    // Update the score in the database
+                    // Deduct points from the user
+                    const price = -parseInt(itemPrice, 10);
                     await fetch(`${apiUrl}?action=updatePoints`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ userId: currentUserId, points: price }),
                     });
-                    alert('Item purchased successfully!');
-                    // Optionally, update the displayed score on the page
+                    
+                    //only add to the database if it's an ingame item
+                    if(inGameItem){
+                        // Add the item to the user's inventory
+                        const addItemResponse = await fetch('assets/addToInventory.php', {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ userId: currentUserId, itemId: itemId, itemType: partType}),
+                        });
+
+                        const addItemData = await addItemResponse.json();
+
+                        if (addItemData.success) {
+                            alert('Item gekocht!');
+                            loadUserInventory(currentUserId);
+                        } else {
+                            console.error('Failed to add item to inventory.');
+                            alert('Error adding item to your inventory. Please contact support.');
+                        }
+                    } else {
+                        alert('Item gekocht!');
+                    }
                 } else {
-                    alert('You do not have enough points to buy this item.');
+                    alert('Niet genoeg punten');
                 }
-                
-                
-            } else {
-                console.error('Failed to fetch user data.');
+            } catch (error) {
+                console.error('An error occurred:', error);
+                alert('An unexpected error occurred. Please try again later.');
             }
-        });
-    });
+    });    
+});
+
+
+
 
  
     </script>

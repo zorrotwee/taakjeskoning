@@ -15,6 +15,7 @@
             <div class="user-container">
             <div class="avatar" id="avatarPreview">
                 <img id="crown" src="images/avatars/kroon.png" alt="crown" style="z-index: 8; display: none;">
+                <img id="left" src="images/avatars/avatar_1/left/none.png"  style="z-index: 7;" alt="Left">
                 <img id="baseAvatar" src="images/avatars/avatar_1/base.png" alt="Avatar Base">
                 <img id="skin" src="images/avatars/avatar_1/skin.png" alt="skin">
                 <img id="head" src="images/avatars/avatar_1/head/bruin.png" alt="Head">
@@ -68,18 +69,19 @@
 
             <!-- Modal (hidden by default) -->
             <div id="taskModal" class="modal hidden">
-            <div class="modal-content">
-                <h2 id="taskName"></h2>
-                <label for="completionDate">Date:</label>
-                <input type="date" id="completionDate">
-                <div class="modal-buttons">
-                <button id="saveTaskButton" class="save-btn">Save</button>
-                <button id="cancelTaskButton" class="cancel-btn">Cancel</button>
+                <div class="modal-content rpg-modal">
+                    <h2 id="taskName" class="rpg-font">Task Name</h2>
+                    <p class="rpg-font">Points: <span id="taskPoints">10</span></p>
+                    <label for="completionDate" class="rpg-font">Completion Date:</label>
+                    <div id="date-picker-container"><input type="date" id="completionDate"></div>
+                    <div id="slidersContainer"></div>
+                    <div class="modal-buttons">
+                        <button id="saveTaskButton" class="rpg-button">Save</button>
+                        <button id="cancelTaskButton" class="rpg-button">Cancel</button>
+                    </div>
                 </div>
-            </div>
-            </div>
+            </div>          
 
-            
     <!-- Task List Section -->
     <div>
         <h2>Routine taken</h2>
@@ -98,7 +100,7 @@
     <script src="/assets/utils.js"></script>
     <script src="/assets/script.js"></script>
     <script src="/assets/progressbar.js"></script>
-    
+    <script src="/assets/js/avatar.js"></script>
     </body>
     
     </html>

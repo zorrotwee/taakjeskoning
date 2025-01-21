@@ -1,0 +1,24 @@
+{
+    "head": {
+        "head_brown": { "name": "Bruin Haar", "file": "bruin.png", "cost": 0 },
+        "head_black": { "name": "Zwart Haar", "file": "zwart.png", "cost": 0 },
+        "head_red": { "name": "Rood Haar", "file": "rood.png", "cost": 0 },
+        "head_blonde": { "name": "Blond Haar", "file": "blond.png", "cost": 0 }
+    },
+    "body": {
+        "body_red": { "name": "Rode Trui", "file": "rood.png", "cost": 0 },
+        "body_yellow": { "name": "Gele Trui", "file": "geel.png", "cost": 0 },
+        "body_pink": { "name": "Roze Trui", "file": "roze.png", "cost": 0 },
+        "body_orange": { "name": "Oranje Trui", "file": "oranje.png", "cost": 0 }
+    },
+    "legs": {
+        "legs_dark_brown": { "name": "Donker Bruine Broek", "file": "donker bruine broek.png", "cost": 0 },
+        "legs_green": { "name": "Groene Broek", "file": "groene broek.png", "cost": 0 },
+        "legs_blue": { "name": "Blauwe Broek", "file": "blauwe broek.png", "cost": 0 },
+        "legs_light_brown": { "name": "Licht Bruine Broek", "file": "licht bruine broek.png", "cost": 0 }
+    },
+    "left": {
+        "none": { "name": "Geen", "file": "none.png", "cost": 0 },
+        "sword": { "name": "Simpel Zwaard", "file": "sword.png", "cost": 150 }
+    }
+}
